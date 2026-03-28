@@ -75,6 +75,8 @@ class DLParseException(Exception):
 
 """removes illegal characters from path and filenames"""
 def cleanPath(path:str) -> str:
+    if os.environ.get("TERMUX_VERSION") is not None:
+        return re.sub(r'[<>:"/\\|?*\x00-\x1f]', "_", path)
     match os.name:
         case 'nt':
             # eww 🤮🤮🤮🤮
