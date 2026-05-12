@@ -13,7 +13,7 @@ def preDownloadMusic(soundtrack:Soundtrack, format:str):
 
     for index, track in enumerate(soundtrack.tracks):
         print("\rPreparing download: {}/{}".format(index+1, len(soundtrack.tracks)), end="")
-        headers = {"User-Agent": "Mozilla/5.0",
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 11.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.6998.166 Safari/537.36",
             "Accept": "text/html,application/xhtml+xml",
             "Accept-Encoding": "identity",
             "Accept-Language": "en-US,en;q=0.9",

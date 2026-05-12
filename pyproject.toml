@@ -4,17 +4,17 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "khinsider-dl"
-version = "1.3.5"
+version = "1.3.6"
 license = "MIT"
 readme = "README.md"
 description = "Download soundtracks from downloads.khinsider.com with a useful and quick CLI"
 authors = [{ name = "qwerinope" }]
 dependencies = [
-	"beautifulsoup4",
-	"requests",
-	"tqdm",
-	"jsonschema",
-	"prettytable",
+  "beautifulsoup4",
+  "requests",
+  "tqdm",
+  "jsonschema",
+  "prettytable",
 ]
 
 [project.urls]
