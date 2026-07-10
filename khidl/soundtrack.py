@@ -2,7 +2,7 @@ BASEURL="https://downloads.khinsider.com"
 import requests, bs4, sys
 
 class Soundtrack:
-    """ Representative of a soundtrack on KHinsider
+    """Represent a soundtrack album on KHInsider.
 
     Attributes:
     id: id of the soundtrack
@@ -52,7 +52,7 @@ class Soundtrack:
         return parser
 
     def _getName(self):
-        # NOTE: This could also be done by using the information txt file. However, i don't give a shit. Maybe later I will.
+        # NOTE: This could also use the information text file, but the page heading is sufficient here.
         parser = self.pageinstance
         if parser.h2 and parser.h2.string:
             ostname = parser.h2.string
@@ -101,7 +101,7 @@ class Soundtrack:
         return trackURLs
 
 class OSTParsingError(Exception):
-    """This should NEVER EVER be triggered. If khinsider's website changes this might get set off but that's very unlikely"""
+    """Raised when KHInsider page parsing fails unexpectedly."""
 
 class OSTNotFound(Exception):
     def __init__(self, soundtrack, *args):

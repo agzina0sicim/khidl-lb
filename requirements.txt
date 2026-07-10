@@ -3,3 +3,5 @@ requests
 tqdm
 jsonschema
 prettytable
+mutagen
+PyYAML

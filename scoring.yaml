@@ -1,0 +1,150 @@
+# KHIDL LaunchBox scoring configuration
+# Positive values prefer matches; negative values penalize matches.
+# You can change values or add new terms.
+
+album:
+  prefer:
+    complete gamerip: 2550
+    complete game rip: 2550
+    gamerip: 2450
+    game rip: 2450
+    game-rip: 2450
+    sound track cd: 1350
+    original game soundtrack: 1260
+    official soundtrack: 1200
+    original soundtrack: 1160
+    sound track: 960
+    ost: 900
+    soundtrack: 850
+    complete: 100
+
+  penalize:
+    lost tracks: -1400
+    the lost tracks: -1450
+    bonus: -650
+    unused: -850
+    unreleased: -850
+    arrange: -850
+    arranged: -850
+    arrangement: -850
+    remix: -950
+    tribute: -900
+    piano: -850
+    orchestra: -850
+    orchestral: -850
+    concert: -760
+    cover: -980
+    fan: -1100
+    doujin: -980
+    sound effect: -1200
+    sound effects: -1200
+    sfx: -1200
+    prototype: -700
+    beta: -700
+    demo: -360
+    vinyl: -160
+
+  # Albums that contain none of these terms receive a strong penalty.
+  allowed_markers:
+    - gamerip
+    - game rip
+    - game-rip
+    - official soundtrack
+    - original soundtrack
+    - original game soundtrack
+    - soundtrack
+    - sound track
+    - ost
+
+  not_allowed_penalty: -1700
+  vol_penalty: -420
+
+  region:
+    usa: 90
+    us: 80
+    u s: 80
+    europe: 75
+    eur: 70
+    world: 65
+    japan: -10
+    jp: -10
+
+  title:
+    exact: 1400
+    contains: 900
+    starts_with: 420
+    similarity_multiplier: 650
+    token_match: 70
+    missing_token: -160
+    clean_suffix: 360
+    allowed_suffix: 220
+    bad_suffix: -900
+
+  platform:
+    wanted: 1050
+    wrong: -2200
+
+  year:
+    missing: -70
+    inside_range: 480
+    near_range: 120
+    after_base: -560
+    after_per_year: -45
+    after_cap: -900
+    before_base: -340
+    before_per_year: -30
+    before_cap: -600
+
+track:
+  prefer:
+    main theme: 520
+    title theme: 500
+    title screen: 485
+    opening theme: 455
+    main title: 450
+    theme of: 430
+    opening: 410
+    intro: 365
+    main menu: 360
+    menu: 315
+    file select: 300
+    character select: 245
+    select: 210
+    overworld: 255
+    world map: 220
+    field: 190
+    title: 320
+    staff roll: 85
+    ending: 70
+    credits: 45
+    stage 1: 30
+    level 1: 30
+    track 1: 25
+
+  penalize:
+    sound effect: -260
+    sound effects: -260
+    sfx: -260
+    jingle: -260
+    fanfare: -260
+    victory: -260
+    game over: -260
+    boss: -260
+    battle: -260
+    fight: -260
+    stage clear: -260
+    lose: -260
+    win: -260
+    unused: -260
+    demo: -260
+    prototype: -260
+    beta: -260
+    voice: -260
+    ambient: -260
+    ambience: -260
+    cutscene: -260
+    movie: -260
+
+  base_start: 100
+  base_index_penalty: -3
+  track_one_bonus: 25

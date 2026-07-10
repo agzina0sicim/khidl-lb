@@ -1,105 +1,200 @@
-# KHIDL
+# KHIDL LaunchBox Music Downloader
 
-***NOTE: THIS PROJECT IS NOT AFFILIATED WITH KHINSIDER.***
+> This project is not affiliated with KHInsider or LaunchBox.
 
-Download soundtracks from [KHInsider](https://downloads.khinsider.com)
-with a simple CLI.
+This fork extends `khidl` with LaunchBox support. It can read LaunchBox platform XML files, find one representative soundtrack theme per game on KHInsider, and save the audio directly into the matching LaunchBox music folder.
 
-## Installing
+## Features
 
-Download the latest version from PyPi using pip with the following command.
+- Download a full KHInsider album by ID or URL.
+- Search KHInsider from the command line.
+- Batch-download albums from `soundtracks.json`.
+- Read LaunchBox games from `Data/Platforms/<Platform>.xml`.
+- Use the game title from `<Title>...</Title>`.
+- Save music to `LaunchBox/Music/<Platform>/`.
+- Skip existing audio files by default in LaunchBox mode.
+- Process one platform or all LaunchBox platform XML files.
+- Select one representative theme track per game.
+- Prefer Gamerips, official soundtracks, original soundtracks, OSTs, and Sound Track CDs.
+- Penalize remixes, piano albums, orchestral albums, fan albums, bonus tracks, lost tracks, beta/prototype albums, and wrong-platform matches.
+- Score album title similarity, platform, release year, album quality, and track quality.
+- Prefer tracks such as Main Theme, Title Theme, Opening, Intro, Menu, Title Screen, Overworld, and World Map.
+- Skip tracks shorter than the configured minimum duration. The default is 30 seconds.
+- Prefer FLAC with `--format best`, falling back to MP3 when FLAC is unavailable.
+- Embed KHInsider album cover art into downloaded MP3 files.
+- Cache album and track matches in `.khidl-theme-cache.json`.
+- Allow custom scoring through `scoring.yaml`.
+- Show clearer progress while processing large LaunchBox libraries.
 
-```sh
-pip install khinsider-dl
+## Requirements
+
+Before installing, make sure you have:
+
+- Python 3.10 or newer
+- pip
+- LaunchBox installed
+- LaunchBox platform XML files in `LaunchBox/Data/Platforms/`
+- An active internet connection
+
+On Windows, verify Python with:
+
+    python --version
+    pip --version
+    
+## Install locally
+
+From the extracted project folder:
+
+```powershell
+pip install .
 ```
 
-You can also download the .whl file from the github releases [here](https://github.com/qwerinope/khidl/releases)
-and install it with `pip install`.
+Check that the command is available:
 
-There's an AUR package available too: [`python-khidl`](https://aur.archlinux.org/packages/python-khidl)
-
-## Usage
-
-### Download
-
-```sh
-khidl download [soundtrack id/url]
+```powershell
+khidl --help
 ```
 
-This command will download the specified soundtrack to a named directory
-in the current working directory.
+If Windows cannot find `khidl`, use:
 
-```sh
-khidl download minecraft output --format flac --no-images
+```powershell
+python -m khidl.app --help
 ```
 
-This command will download the minecraft soundtrack to a directory called output.
-If the second positional command is left empty it will download the soundtrack
-to a new directory named after the requested soundtrack.
+## LaunchBox mode
 
-The `--format` flag can be used to specify the requested music format.
-All soundtracks are available in mp3 format.
-Most soundtracks have other optional formats, like flac or m4a.
-If a soundtrack is unavailable in the requested format,
-the program will stop and notify the user about available formats.
-If the user specifies the format as `nomusic`, the program will not download music, only images.
+### One platform
 
-The `--no-images` argument makes sure `khidl` doesn't download images
-belonging to the soundtrack.
-
-
-For more detail please read the help page:
-
-```sh
-khidl download -h
+```powershell
+khidl launchbox "C:\Users\YourName\LaunchBox" --platform "Nintendo 64" --format best
 ```
 
-### Search
+This reads:
 
-```sh
-khidl search [query]
+```text
+C:\Users\YourName\LaunchBox\Data\Platforms\Platform.xml
 ```
 
-This command will query the KHInsider database for soundtracks containing the query.
-Afterwards it will print the result to the terminal in a pretty table.
+and writes audio files to:
 
-```sh
-khidl search lonely rolling star --song
+```text
+C:\Users\YourName\LaunchBox\Music\Platform\
 ```
 
-This command will search the database for songs with the query 'lonely rolling star'.
-Afterwards it will return all soundtracks with a song that features the query.
+### All platforms
 
-`khidl search` returns the name and ID of the soundtrack,
-as well as the year of release.
-You need to pass the ID into the [download function](#download)
-to download the ost.
+Omit `--platform` to process every XML file in `Data\Platforms`:
 
-Note that searcing for a specific song is considerably slower,
-it can take about 10 seconds to show data.
+```powershell
+khidl launchbox "C:\Users\YourName\LaunchBox" --format best
+```
 
-### Batch
+### Test run without downloading
 
-To create the default configuration, run
+```powershell
+khidl launchbox "C:\Users\YourName\LaunchBox" --platform "Nintendo 64" --format best --dry-run
+```
 
-```sh
+### MP3 only
+
+```powershell
+khidl launchbox "C:\Users\YourName\LaunchBox" --platform "Nintendo 64" --format mp3
+```
+
+### FLAC only
+
+```powershell
+khidl launchbox "C:\Users\YourName\LaunchBox" --platform "Nintendo 64" --format flac
+```
+
+### Best available quality
+
+`best` prefers FLAC and falls back to MP3:
+
+```powershell
+khidl launchbox "C:\Users\YourName\LaunchBox" --platform "Nintendo 64" --format best
+```
+
+### Refresh the cache
+
+Use this after changing `scoring.yaml` or when you want the tool to search again:
+
+```powershell
+khidl launchbox "C:\Users\YourName\LaunchBox" --platform "Nintendo 64" --format best --refresh-cache
+```
+
+### Download again even if audio already exists
+
+LaunchBox mode skips existing audio files by default. To force a new download:
+
+```powershell
+khidl launchbox "C:\Users\YourName\LaunchBox" --platform "Nintendo 64" --format best --no-skip-existing
+```
+
+## Custom scoring
+
+The default scoring behavior is stored in `scoring.yaml`. You can edit it to change which album and track names are preferred or penalized.
+
+Example:
+
+```yaml
+album:
+  prefer:
+    gamerip: 2450
+    official soundtrack: 1200
+    sound track cd: 1350
+  penalize:
+    remix: -950
+    lost tracks: -1400
+
+track:
+  prefer:
+    main theme: 520
+    title theme: 500
+  penalize:
+    battle: -260
+    boss: -260
+```
+
+Run with a custom scoring file:
+
+```powershell
+khidl launchbox "C:\Users\YourName\LaunchBox" --platform "Nintendo 64" --format best --scoring-file scoring.yaml --refresh-cache
+```
+
+## Original khidl commands
+
+Download one album:
+
+```powershell
+khidl download super-mario-64-soundtrack --format mp3
+```
+
+Search KHInsider:
+
+```powershell
+khidl search super mario 64
+```
+
+Create a batch config:
+
+```powershell
 khidl batch --init
 ```
 
-This creats a `soundtrack.json`. In this file,
-you can specify multiple soundtracks to be downloaded.
-For each soundtrack you can set the requested download format.
+## Repository structure
 
-The example showcases all options and ways to configure it.
-There is a JSON schema included, please use it,
-as it will warn you before running the script if you have made an error.
-
-The script will validate the json before parsing it.
-This behavior can be stopped by using `-f`/`--force`.
-This is intended for testing and development only.
-If the formatting is wrong the program will crash.
-
-#### Special thanks
-
-Special thanks to KHInsider for the incredible database.  
-Special thanks to [obskyr's khinsider.py](https://github.com/obskyr/khinsider) project.
+```text
+khidl/
+  app.py          # CLI dispatcher
+  args.py         # argument parsing
+  downloader.py   # download helpers and MP3 cover embedding
+  search.py       # KHInsider search command
+  soundtrack.py   # KHInsider album parser
+  themefinder.py  # LaunchBox theme selection logic
+scoring.yaml      # default scoring configuration
+pyproject.toml    # Python package metadata
+requirements.txt  # runtime dependencies
+README.md
+LICENSE
+```

@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import requests
 
 class SearchParsingError(Exception):
-    """This should NEVER EVER be triggered. If khinsider's website changes this might get set off but that's very unlikely"""
+    """Raised when KHInsider page parsing fails unexpectedly."""
 
 class SearchNoResults(Exception):
     def __init__(self, *args: object) -> None:
